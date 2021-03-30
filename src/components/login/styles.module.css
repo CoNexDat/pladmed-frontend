@@ -1,0 +1,35 @@
+.form {
+    padding: 5%;
+}
+
+.title {
+    justify-content: center;
+    display: flex;
+    font-weight: 400;
+}
+
+.controlBox {
+    margin-top: 5%;
+    padding: 6%;
+}
+
+.rememberMe {
+    margin-top: 5%;
+}
+
+.button {
+    margin-top: 5%;
+    font-size: large;
+}
+
+.formExtra {
+    padding-top: 5%;
+}
+
+.forgotPass {
+    cursor: pointer;
+}
+
+.register {
+    text-align: end;
+}

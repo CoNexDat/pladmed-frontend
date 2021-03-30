@@ -1,0 +1,14 @@
+.navbar {
+    padding: 1% 0;
+    background-color: #525252;
+}
+
+.brand {
+    padding-left: 5%;
+}
+
+@media (max-width: 576px) {
+    .options {
+        padding-left: 5%;
+    }
+}

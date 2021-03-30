@@ -1,0 +1,21 @@
+.formButton {
+    justify-content: center;
+    padding-top: 5%;
+}
+
+.loginBackground {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login {
+    padding: 0;
+    max-width: 500px;
+    background-color: white;
+    border-radius: 1%;
+    box-shadow: 0px 1px 8px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0px 1px 8px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 1px 8px 0px rgba(0,0,0,0.75);
+}
