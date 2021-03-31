@@ -27,7 +27,7 @@ function App() {
     return (
         <React.Fragment>
             <ContextProvider>
-                <Router>
+                <Router basename={'pladmed'}>
                     <Switch>
                         <Route path="/login" component={LoginScreen} />
                         <>

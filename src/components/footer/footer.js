@@ -5,7 +5,7 @@ import {
 import styles from './styles.module.css'
 
 function Footer() {
-    const email = "Ignacio.Alvarez-Hamelin@cnet.fi.uba.ar";
+    const email = "pladmed@cnet.fi.uba.ar";
 
     return (
         <Container fluid className={styles.footer}>
