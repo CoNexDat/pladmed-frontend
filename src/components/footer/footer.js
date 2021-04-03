@@ -4,7 +4,11 @@ import {
 } from 'react-bootstrap';
 import styles from './styles.module.css'
 
-function Footer() {
+function Footer(props) {
+    if (!props.logged) {
+        return null;
+    }
+
     const email = "pladmed@cnet.fi.uba.ar";
 
     return (

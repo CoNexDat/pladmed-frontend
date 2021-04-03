@@ -4,10 +4,13 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
+import { ContextProvider } from './controllers/context_provider';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ContextProvider>
+      <App />
+    </ContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,20 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
     Button,
-    Form,
-    Col
+    Form
 } from 'react-bootstrap';
 import styles from './styles.module.css';
-import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 import ErrorMessage from '../error_message/error_message'
 
-function Login(props) {
+function Register(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const errorLogin = useRef(null)
+    const errorRegister = useRef(null)
     const mounted = useRef(false);
 
     useEffect(() => {
@@ -23,18 +21,18 @@ function Login(props) {
         return () => { mounted.current = false; };
     }, []);
 
-    const login = async () => {
-        errorLogin.current.hide();
+    const register = async () => {
+        errorRegister.current.hide();
         setLoading(true);
 
-        const success = await props.login(email, password);
+        const success = await props.register(email, password);
 
         if (!mounted.current) {
-            return;
+            return
         }
 
         if (!success) {
-            errorLogin.current.display();
+            errorRegister.current.display();
         }
 
         setLoading(false);
@@ -48,14 +46,14 @@ function Login(props) {
         setPassword(event.target.value);
     }
 
-    const loginEnabled = () => {
+    const registerEnabled = () => {
         return email.length > 0 && password.length > 0 && !loading;
     }
 
     return (
         <Form className={styles.form}>
             <Form.Label className={[styles.title, "h4"]}>
-                Iniciar sesión
+                Registrarse
             </Form.Label>
             <Form.Control
                 type="email"
@@ -69,44 +67,27 @@ function Login(props) {
                 placeholder="Contraseña..."
                 onChange={onPasswordSet}
             />
-            <Form.Check 
-                type="checkbox"
-                className={styles.rememberMe}
-                label="Recuerdame"
-                id="customControlInline"
-                custom
-            />
             <ErrorMessage
-                ref={errorLogin}
+                ref={errorRegister}
                 styles={styles.error}
-                message="No podemos ingresar con las credenciales proporcionadas"
+                message="No podemos registrar su cuenta"
             />
             <Button
                 variant="primary"
                 type="button"
                 block
                 className={styles.button}
-                onClick={login}
-                disabled={!loginEnabled()}
+                onClick={register}
+                disabled={!registerEnabled()}
             >
-                Iniciar sesión
+                Registrarse
             </Button>
-            <Form.Row className={styles.formExtra}>
-                <Col className={styles.forgotPass}>
-                    <Link to={props.forgotPassUrl}>¿Olvidaste tu contraseña?</Link>
-                </Col>
-                <Col className={styles.register}>
-                    <Link to={props.registerUrl}>Registrate aquí</Link>
-                </Col>
-            </Form.Row>
         </Form>
     );
 };
 
-Login.propTypes = {
-    login: PropTypes.func.isRequired,
-    forgotPassUrl: PropTypes.string.isRequired,
-    registerUrl: PropTypes.string.isRequired 
+Register.propTypes = {
+    register: PropTypes.func.isRequired
 }
 
-export default Login;
+export default Register;

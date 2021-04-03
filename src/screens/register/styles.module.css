@@ -1,11 +1,11 @@
-.loginBackground {
+.registerBackground {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.login {
+.register {
     padding: 0;
     max-width: 500px;
     background-color: white;

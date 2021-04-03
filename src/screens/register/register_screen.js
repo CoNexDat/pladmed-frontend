@@ -7,19 +7,19 @@ import styles from './styles.module.css';
 import background from "../../assets/network.jpg";
 import { Context } from '../../controllers/context_provider'
 import { useHistory } from "react-router-dom";
-import Login from '../../components/login/login'
-import { requestLogin } from '../../requesters/account_requester'
+import Register from '../../components/register/register'
+import { requestRegister } from '../../requesters/account_requester'
 
-function LoginScreen() {
+function RegisterScreen() {
     const history = useHistory();
     const { setLogged } = useContext(Context);
-    
-    const login = async (email, password) => {
-        console.log("Trying to login")
-        try {
-            const [status, res] = await requestLogin(email, password);
 
-            const success = status === 200;
+    const register = async (email, password) => {
+        console.log("Trying to register")
+        try {
+            const [status, res] = await requestRegister(email, password);
+
+            const success = status === 201;
 
             console.log("Res is ", res)
 
@@ -30,7 +30,7 @@ function LoginScreen() {
 
             return success;
         } catch (e) {
-            console.log("Error")
+            console.log("Error: ", e)
             return false;
         }
     }
@@ -39,17 +39,15 @@ function LoginScreen() {
         <Container
             fluid
             style={{backgroundImage: `url(${background}` }}
-            className={styles.loginBackground}
+            className={styles.registerBackground}
         >
-            <Col className={styles.login}>
-                <Login
-                    login={login}
-                    forgotPassUrl={"/forgot-password"}
-                    registerUrl={"/register"}
+            <Col className={styles.register}>
+                <Register
+                    register={register}
                 />
             </Col>
         </Container>
     );
 };
 
-export default LoginScreen;
+export default RegisterScreen;

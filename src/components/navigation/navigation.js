@@ -2,12 +2,17 @@ import React from 'react';
 import {NavLink, withRouter}  from 'react-router-dom'
 import {
     Navbar,
-    Nav
+    Nav,
+    NavDropdown
   } from 'react-bootstrap';
 import Logo from '../../assets/logo.png'
 import styles from './styles.module.css'
 
-function Navigation() {
+function NavigationElement(props) {
+    if (!props.logged) {
+        return null;
+    }
+    
     return (
         <Navbar 
             collapseOnSelect
@@ -27,27 +32,44 @@ function Navigation() {
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">            
-            <Nav navbar className={styles.options}>
-                <Nav.Item>
-                    <Nav.Link as={NavLink} exact className="font-weight-bold" to="/">
-                        Inicio
-                    </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                    <Nav.Link as={NavLink} exact className="font-weight-bold" to="/users/me">
-                        Mi cuenta
-                    </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                    <Nav.Link as={NavLink} exact className="font-weight-bold" to="/operations">
-                        Mediciones
-                    </Nav.Link>
-                </Nav.Item>                    
-            </Nav>
+                <Nav navbar className={styles.options}>
+                    <Nav.Item>
+                        <Nav.Link as={NavLink} exact className="font-weight-bold" to="/">
+                            Inicio
+                        </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link as={NavLink} exact className="font-weight-bold" to="/operations">
+                            Mediciones
+                        </Nav.Link>
+                    </Nav.Item>
+                    <NavDropdown
+                        title="Mi cuenta"
+                        className={"font-weight-bold"}
+                        id="nav-dropdown"
+                    >
+                        <NavDropdown.Item
+                            as={NavLink}
+                            to="/users/me"
+                        >
+                            Mis datos
+                        </NavDropdown.Item>
+                        <NavDropdown.Item
+                            as={NavLink}
+                            to="/my_probes"
+                        >
+                            Mis sondas
+                        </NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item>
+                            Cerrar sesión
+                        </NavDropdown.Item>
+                    </NavDropdown>
+                </Nav>
             </Navbar.Collapse>
         </Navbar>
         );    
 }
 
-Navigation = withRouter(Navigation);
+const Navigation = withRouter(NavigationElement);
 export default Navigation;

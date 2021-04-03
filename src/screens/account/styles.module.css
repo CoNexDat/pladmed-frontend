@@ -1,0 +1,26 @@
+.mainContainer {
+    padding: 0% 10%;
+}
+
+.accountData {
+    padding: 0;
+    max-width: 800px;
+    background-color: white;
+    border-radius: 1%;
+    box-shadow: 0px 1px 8px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0px 1px 8px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 1px 8px 0px rgba(0,0,0,0.75);
+    overflow: hidden;
+}
+
+.title {
+    justify-content: center;
+    display: flex;
+    font-weight: 400;
+    padding-bottom: 5%;
+}
+
+.form {
+    padding: 5%;
+    flex: 1;
+}
