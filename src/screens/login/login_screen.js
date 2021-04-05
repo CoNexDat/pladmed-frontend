@@ -6,33 +6,13 @@ import {
 import styles from './styles.module.css';
 import background from "../../assets/network.jpg";
 import { Context } from '../../controllers/context_provider'
-import { useHistory } from "react-router-dom";
 import Login from '../../components/login/login'
-import { requestLogin } from '../../requesters/account_requester'
 
 function LoginScreen() {
-    const history = useHistory();
-    const { setLogged } = useContext(Context);
+    const { login } = useContext(Context);
     
-    const login = async (email, password) => {
-        console.log("Trying to login")
-        try {
-            const [status, res] = await requestLogin(email, password);
-
-            const success = status === 200;
-
-            console.log("Res is ", res)
-
-            if (success) {
-                setLogged(true)
-                history.push("/");
-            }
-
-            return success;
-        } catch (e) {
-            console.log("Error")
-            return false;
-        }
+    const dispatchLogin = async (email, password) => {
+        await login(email, password);
     }
 
     return (
@@ -43,7 +23,7 @@ function LoginScreen() {
         >
             <Col className={styles.login}>
                 <Login
-                    login={login}
+                    login={dispatchLogin}
                     forgotPassUrl={"/forgot-password"}
                     registerUrl={"/register"}
                 />

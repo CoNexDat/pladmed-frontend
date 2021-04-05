@@ -1,5 +1,5 @@
 .mainContainer {
-    padding: 0% 10%;
+    padding: 0% 0%;
 }
 
 .accountData {
@@ -23,4 +23,46 @@
 .form {
     padding: 5%;
     flex: 1;
+}
+
+.question {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.questionContainer {
+    display: flex;
+}
+
+.noProbes {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.registerProbe {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+    font-size: large;
+}
+
+.probeInfo {
+    padding: 1% 0;
+    display: flex;
+    align-items: center;
+}
+
+.group {
+    display: flex;
+    align-items: center;
+}
+
+.groupToken {
+    display: flex;
+    align-items: center;
+    color: blue;
+    cursor: pointer;
 }

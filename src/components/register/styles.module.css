@@ -16,6 +16,9 @@
 .button {
     margin-top: 5%;
     font-size: large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .error {

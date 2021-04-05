@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     Button,
     Form
@@ -13,29 +13,17 @@ function Register(props) {
     const [loading, setLoading] = useState(false);
 
     const errorRegister = useRef(null)
-    const mounted = useRef(false);
-
-    useEffect(() => {
-        mounted.current = true;
-    
-        return () => { mounted.current = false; };
-    }, []);
 
     const register = async () => {
         errorRegister.current.hide();
         setLoading(true);
 
-        const success = await props.register(email, password);
-
-        if (!mounted.current) {
-            return
-        }
-
-        if (!success) {
+        try {
+            await props.register(email, password);
+        } catch (e) {
             errorRegister.current.display();
+            setLoading(false);
         }
-
-        setLoading(false);
     }
 
     const onEmailSet = (event) => {

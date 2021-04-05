@@ -1,0 +1,15 @@
+.controlBox {
+    margin-top: 5%;
+    padding: 6%;
+}
+
+.error {
+    color: red;
+    text-align: center;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

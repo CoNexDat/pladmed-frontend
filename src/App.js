@@ -9,15 +9,29 @@ import { Context } from './controllers/context_provider'
 import Navigation from './components/navigation/navigation'
 import Footer from './components/footer/footer'
 
-const ProtectedRoute = ({ component: Component, ...args }) => {
+const AuthRoute = ({ component: Component, ...args }) => {
     const { logged } = useContext(Context);
 
     return (
         <Route
             {...args}
             render={ props =>
-                logged ?
+                logged() ?
                 (<Component {...props} />) : (<Redirect to={{pathname: "/login"}} />)
+            } 
+        />
+    )
+}
+
+const NoAuthRoute = ({ component: Component, ...args }) => {
+    const { logged } = useContext(Context);
+
+    return (
+        <Route
+            {...args}
+            render={ props =>
+                !logged() ?
+                (<Component {...props} />) : (<Redirect to={{pathname: "/"}} />)
             } 
         />
     )
@@ -29,27 +43,27 @@ function App() {
     return (
         <React.Fragment>
             <Router>
-                <Navigation logged={logged}/>
+                <Navigation logged={logged()}/>
                     <Switch>
-                        <Route exact path="/login" component={LoginScreen} />
-                        <Route exact path="/register" component={RegisterScreen} />
-                        <ProtectedRoute
+                        <NoAuthRoute exact path="/login" component={LoginScreen} />
+                        <NoAuthRoute exact path="/register" component={RegisterScreen} />
+                        <AuthRoute
                             exact path="/"
                             component={HomeScreen}
                         />
-                        <ProtectedRoute
+                        <AuthRoute
                             exact path="/operations"
                             component={OperationsScreen}
                         />
-                        <ProtectedRoute
+                        <AuthRoute
                             exact path="/users/me"
                             component={AccountScreen}
                         />
-                        <ProtectedRoute
+                        <AuthRoute
                             component={() => "404 not found"}
                         />
                     </Switch>
-                <Footer logged={logged}/>
+                <Footer logged={logged()}/>
             </Router>
         </React.Fragment>
     )

@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
-    Button,
     Form,
-    Col
+    Col,
 } from 'react-bootstrap';
 import styles from './styles.module.css';
 import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 import ErrorMessage from '../error_message/error_message'
+import ButtonLoad from '../button_load/button_load'
 
 function Login(props) {
     const [email, setEmail] = useState("");
@@ -15,29 +15,17 @@ function Login(props) {
     const [loading, setLoading] = useState(false);
 
     const errorLogin = useRef(null)
-    const mounted = useRef(false);
-
-    useEffect(() => {
-        mounted.current = true;
-    
-        return () => { mounted.current = false; };
-    }, []);
 
     const login = async () => {
         errorLogin.current.hide();
         setLoading(true);
 
-        const success = await props.login(email, password);
-
-        if (!mounted.current) {
-            return;
-        }
-
-        if (!success) {
+        try {
+            await props.login(email, password);
+        } catch (e) {
             errorLogin.current.display();
+            setLoading(false);
         }
-
-        setLoading(false);
     }
 
     const onEmailSet = (event) => {
@@ -81,16 +69,17 @@ function Login(props) {
                 styles={styles.error}
                 message="No podemos ingresar con las credenciales proporcionadas"
             />
-            <Button
+            <ButtonLoad
                 variant="primary"
                 type="button"
                 block
                 className={styles.button}
                 onClick={login}
                 disabled={!loginEnabled()}
+                loading={loading}
             >
                 Iniciar sesión
-            </Button>
+            </ButtonLoad>
             <Form.Row className={styles.formExtra}>
                 <Col className={styles.forgotPass}>
                     <Link to={props.forgotPassUrl}>¿Olvidaste tu contraseña?</Link>
