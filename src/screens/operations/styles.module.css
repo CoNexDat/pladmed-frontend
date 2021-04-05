@@ -1,0 +1,67 @@
+.surface {
+    padding: 0;
+    max-width: 800px;
+    background-color: white;
+    border-radius: 1%;
+    box-shadow: 0px 1px 8px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0px 1px 8px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 1px 8px 0px rgba(0,0,0,0.75);
+    overflow: hidden;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.form {
+    padding: 3%;
+    flex: 1;
+}
+
+.search {
+    margin: 2% 0%;
+}
+
+.options {
+    margin-top: 2%;
+}
+
+.params {
+    min-height: 250px;
+}
+
+@media (min-width: 576px) {
+    .centered {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 576px) {
+    .centered {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.map {
+    flex: 1;
+    height: 50vh;
+    max-height: 800px;
+}
+
+.jsonContainer {
+    border-width: 0.5px;
+    border-style: solid;
+    border-color: #d4d4d4;
+}
+
+.buttonCreate {
+    margin-top: 3%;
+    display: flex;
+    justify-content: center;
+}

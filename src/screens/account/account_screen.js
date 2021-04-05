@@ -20,6 +20,7 @@ import { MdRouter, MdLocationOn, MdInfoOutline, MdVpnKey } from "react-icons/md"
 function AccountScreen() {
     const { getUserData, getMyProbes, registerProbe } = useContext(Context);
 
+    const [id, setId] = useState("")
     const [email, setEmail] = useState("");
     const [credits, setCredits] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -49,6 +50,7 @@ function AccountScreen() {
                 
                 setEmail(userData["email"])
                 setCredits(userData["credits"])
+                setId(userData["_id"])
                 setMyProbes(probes)
                 setLoading(false);
             } catch (e) {
@@ -173,6 +175,21 @@ function AccountScreen() {
                         <Form.Label className={[styles.title, "h3"]}>
                             Datos de cuenta
                         </Form.Label>
+                        <Form.Group as={Row} controlId="formId" className={"h6"}>
+                            <Form.Label
+                                column
+                                xl={2} lg={2} md={2} sm={2} xs={3}
+                                className={styles.label}
+                            >
+                                Id:
+                            </Form.Label>
+                            <Form.Label
+                                column
+                                xl={4} lg={4} md={4} sm={4} xs={4}
+                            >
+                                {id}
+                            </Form.Label>
+                        </Form.Group>                        
                         <Form.Group as={Row} controlId="formEmail" className={"h6"}>
                             <Form.Label
                                 column

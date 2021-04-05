@@ -8,13 +8,13 @@ import {
 import styles from './styles.module.css';
 import { Context } from '../../controllers/context_provider'
 import WorldNetwork from "../../assets/world_network.jpg";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { Popup } from 'react-leaflet'
+import Map from '../../components/map/map'
 
 function HomeScreen() {
     const { getAllProbes } = useContext(Context);
 
     const [probes, setProbes] = useState([])
-    const center = [5.409025, -16.994204];
 
     useEffect(() => {
         async function init() {
@@ -78,23 +78,11 @@ function HomeScreen() {
                     <Row className={[styles.title, "h2"]}>
                         Tenemos varias sondas disponibles para tus mediciones
                     </Row>
-                    <MapContainer className={styles.map} center={center} zoom={2} scrollWheelZoom={false}>
-                        <TileLayer
-                            attribution='<a href="https://www.google.es/maps/preview">Google Maps</a>'
-                            url="https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}"
-                        />
-                        {probes.map((probe, idx) => 
-                            <Marker
-                                key={idx}
-                                position={
-                                    [probe["location"]["latitude"], probe["location"]["longitude"]]
-                                }
-                                opacity={probe["connected"] ? 1.0 : 0.5}
-                            >
-                                {renderPopup(probe)}
-                            </Marker>
-                        )}
-                    </MapContainer>
+                    <Map
+                        className={styles.map}
+                        markers={probes}
+                        renderPopup={renderPopup}
+                    />
                 </Col>
             </Row>
         </Container>
