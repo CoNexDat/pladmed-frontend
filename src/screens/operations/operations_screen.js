@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import {
     Container,
     Row,
     Col,
-    Form
+    Form,
+    ListGroup,
+    Accordion,
+    Button,
+    Card
 } from 'react-bootstrap';
 import styles from './styles.module.css';
 import { Context } from '../../controllers/context_provider'
@@ -12,26 +16,110 @@ import Map from '../../components/map/map'
 import { Tooltip } from 'react-leaflet'
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/es';
+import ErrorMessage from '../../components/error_message/error_message'
+import { MdAssessment } from "react-icons/md"
+
+const OPERATIONS = [
+    "Traceroute",
+    "DNS",
+    "Ping"
+]
+
+const TRACEROUTE_FORMAT = [
+    "json",
+    "dump"
+]
 
 function OperationsScreen() {
-    const { getAllProbes } = useContext(Context);
+    const { 
+        getAllProbes,
+        getMyOperations,
+        createOperation,
+        findOperation
+    } = useContext(Context);
 
     const [probes, setProbes] = useState([]);
+    const [myOperations, setMyOperations] = useState([]);
+
+    const [operation, setOperation] = useState(OPERATIONS[0])
+    const [format, setFormat] = useState("json");
+    const [params, setParams] = useState({})
     const [probesTouched, setProbesTouched] = useState([]);
-    
+    const [creatingOp, setCreatingOp] = useState(false);
+
+    const [searchOperation, setSearchOperation] = useState("");
+    const [searching, setSearching] = useState(false);
+    const [results, setResults] = useState({})
+
+    const errorOperation = useRef();
+    const errorSearching = useRef();
+
+    const retrieveOperations = async () => {
+        const myOps = await getMyOperations();
+
+        setMyOperations(myOps);
+    }
+
     useEffect(() => {
         async function init() {
             try {
                 const data = await getAllProbes();
+                const myOps = await getMyOperations();
 
-                setProbes(data)
+                setProbes(data);
+                setMyOperations(myOps);
             } catch (e) {
 
             }
         }
         
         init();
-    }, [getAllProbes]);
+    }, [getAllProbes, getMyOperations]);
+
+    const createOperationTouch = async () => {
+        errorOperation.current.hide();
+        setCreatingOp(true);
+
+        try {
+            await createOperation(
+                operation,
+                format,
+                params,
+                probesTouched
+            );
+
+            retrieveOperations();
+        } catch (e) {
+            errorOperation.current.display();
+        }
+
+        setCreatingOp(false);
+    }
+
+    const findOperationTouch = async () => {
+        errorSearching.current.hide();
+        setSearching(true);
+
+        try {
+            const data = await findOperation(
+                searchOperation
+            );
+            
+            setResults(data);
+        } catch (e) {
+            errorSearching.current.display();
+        }
+
+        setSearching(false);
+    }
+
+    const searchEnabled = () => {
+        return searchOperation.length > 0 && !searching;
+    }
+
+    const createOperationEnabled = () => {
+        return Object.keys(params).length > 0 && probesTouched.length > 0 && !creatingOp;
+    }
 
     const markerTouch = (probe) => {
         if (!probe["connected"]) {
@@ -73,6 +161,90 @@ function OperationsScreen() {
         )        
     }
 
+    const operationSelect = (event) => {
+        setOperation(event.target.value);
+    }
+
+    const formatSelect = (event) => {
+        setFormat(event.target.value);
+    }
+
+    const searchInput = (event) => {
+        setSearchOperation(event.target.value);
+    }
+
+    const onParamsSet = (event) => {
+        if (event.error === false) {
+            setParams(event.jsObject);
+        } else {
+            setParams({})
+        }
+    }
+
+    const renderOperations = () => {
+        if (myOperations.length === 0) {
+            return (
+                <Row className={styles.noOperations}>
+                    No tienes mediciones registradas
+                </Row>
+            )
+        }
+
+        let rows = []
+
+        myOperations.map((op, idx) => 
+            rows.push(
+                <ListGroup.Item key={idx}>
+                    <Row className={styles.operationInfo}>
+                        <Col xl={2} lg={2} md={2} sm={2} xs={12}>
+                            <MdAssessment 
+                                size="3em"
+                                color="blue"
+                            />
+                        </Col>
+                        <Col xl={10} lg={10} md={10} sm={10} xs={10}>
+                            <Accordion>
+                                <Card>
+                                    <Card.Header >
+                                        <Accordion.Toggle as={Button} variant="link" eventKey={String(idx)}>
+                                            Ver parámetros
+                                        </Accordion.Toggle>
+                                    </Card.Header>
+                                    <Accordion.Collapse eventKey={String(idx)}>
+                                        <Card.Body>
+                                        <ListGroup>
+                                            <ListGroup.Item>
+                                                Id: {op["_id"]}
+                                            </ListGroup.Item>
+                                            <ListGroup.Item>
+                                                Créditos: {op["credits"]}
+                                            </ListGroup.Item>
+                                            <ListGroup.Item>
+                                                Parámetros: <br/>
+                                                <div>
+                                                    <pre>
+                                                        {JSON.stringify(op["params"], null, 2)}
+                                                    </pre>
+                                                </div>
+                                            </ListGroup.Item>
+                                        </ListGroup>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+                            </Accordion>
+                        </Col>
+                    </Row>
+                </ListGroup.Item>
+            )
+        );
+                
+        return (
+            <ListGroup>
+                {rows}
+            </ListGroup>
+        );
+    }
+
     return (
         <Container
             fluid
@@ -83,32 +255,60 @@ function OperationsScreen() {
                     <Form.Label className={[styles.title, "h3"]}>
                         Buscar medición
                     </Form.Label>
-                    <Form.Row>
-                        <Col
-                            xl={8} lg={8} md={8} sm={8} xs={12}
-                        >
-                            <Form.Control
-                                type="input"
-                                placeholder="Identificador..."
-                                className={styles.search}
-                            />
-                        </Col>
-                        <Col
-                            xl={4} lg={4} md={4} sm={4} xs={12}
-                            className={styles.centered}
-                        >
-                            <ButtonLoad
-                                variant="primary"
-                                type="button"
-                                //onClick={this.registerProbe}
-                                //disabled={!this.registerEnabled()}
-                                className={styles.centered}
-                                loading={false}
+                    <Container>
+                        <Form.Row>
+                            <Col
+                                xl={8} lg={8} md={8} sm={8} xs={12}
                             >
-                                Buscar
-                            </ButtonLoad>
-                        </Col>
-                    </Form.Row>
+                                <Form.Control
+                                    type="input"
+                                    placeholder="Identificador..."
+                                    className={styles.search}
+                                    onChange={searchInput}
+                                />
+                            </Col>
+                            <Col
+                                xl={4} lg={4} md={4} sm={4} xs={12}
+                                className={styles.centered}
+                            >
+                                <ButtonLoad
+                                    variant="primary"
+                                    type="button"
+                                    onClick={findOperationTouch}
+                                    disabled={!searchEnabled()}
+                                    className={styles.centered}
+                                    loading={searching}
+                                >
+                                    Buscar
+                                </ButtonLoad>
+                            </Col>
+                        </Form.Row>
+                        <ErrorMessage
+                            ref={errorSearching}
+                            styles={styles.error}
+                            message="La operación no pudo obtenerse"                        
+                        />
+                        {
+                            Object.keys(results).length > 0 &&
+                            <Form.Row>
+                                <div>
+                                    <pre>
+                                        {JSON.stringify(results, null, 2)}
+                                    </pre>
+                                </div>
+                            </Form.Row>
+                        }
+                    </Container>
+                </Form>
+            </Row>
+            <Row className={[styles.surface, "mx-auto", "mt-4"]}>
+                <Form className={styles.form}>
+                    <Form.Label className={[styles.title, "h3"]}>
+                        Mis mediciones
+                    </Form.Label>
+                    <Container>
+                        {renderOperations()}
+                    </Container>
                 </Form>
             </Row>
             <Row className={[styles.surface, "mx-auto", "mt-4"]}>
@@ -116,59 +316,51 @@ function OperationsScreen() {
                     <Form.Label className={[styles.title, "h3"]}>
                         Crear medición
                     </Form.Label>
-                     <Form.Row>
+                    <Form.Row>
                         <Col
                             xl={8} lg={8} md={8} sm={8} xs={12}
                         >
-                            <Form.Control as="select" className={styles.options}>
-                                <option>Traceroute</option>
-                                <option>Resolución DNS</option>
-                                <option>Ping</option>
+                            <Form.Control
+                                as="select"
+                                className={styles.options}
+                                onChange={operationSelect}
+                            >
+                                <option>{OPERATIONS[0]}</option>
+                                <option>{OPERATIONS[1]}</option>
+                                <option>{OPERATIONS[2]}</option>
                             </Form.Control>
                         </Col>
-                     </Form.Row>
-                     <Form.Row className={"pt-4"}>
-                        <Col
-                            xl={8} lg={8} md={8} sm={8} xs={12}
-                        >
-                            <Form.Group controlId="formIps">
-                                <Form.Control
-                                    type="input"
-                                    placeholder="Ips separadas por coma..."
-                                />
-                                <Form.Text
-                                    className={"text-muted"}
+                    </Form.Row>
+                    {
+                        operation === OPERATIONS[0] &&
+                        <Form.Row className={"pb-4"}>
+                            <Col
+                                xl={8} lg={8} md={8} sm={8} xs={12}
+                            >
+                            <Form.Control
+                                as="select"
+                                className={styles.options}
+                                onChange={formatSelect}
+                            >
+                                <option>{TRACEROUTE_FORMAT[0]}</option>
+                                <option>{TRACEROUTE_FORMAT[1]}</option>
+                            </Form.Control>
+                            <Form.Text
+                                className={"text-muted"}
                                 >
-                                    Ejemplo: 192.168.0.1, 192.168.1.1, ...
-                                </Form.Text>
-                            </Form.Group>
-                        </Col>
-                     </Form.Row>
-                     <Form.Row>
-                        <Col
-                            xl={8} lg={8} md={8} sm={8} xs={12}
-                        >
-                            <Form.Group controlId="formIps">
-                                <Form.Control
-                                    type="input"
-                                    placeholder="FQDNs separadas por coma..."
-                                />
-                                <Form.Text
-                                    className={"text-muted"}
-                                >
-                                    Ejemplo: www.google.com, www.yahoo.com.ar, ...
-                                </Form.Text>
-                            </Form.Group>
-                        </Col>
-                     </Form.Row>
-                     <Form.Row className={"pt-4"}>
+                                Formato de salida de datos
+                            </Form.Text>
+                            </Col>
+                        </Form.Row>
+                    }
+                    <Form.Row className={"pt-4"}>
                         <Col
                             xl={8} lg={8} md={8} sm={8} xs={12}
                         >
                             <Form.Label>
                                 Parámetros de la medición
                             </Form.Label>
-                            <Form.Group controlId="formIps">
+                            <Form.Group controlId="formJson">
                                 <div className={styles.jsonContainer}>
                                     <JSONInput
                                         id='jsonInput'
@@ -185,6 +377,7 @@ function OperationsScreen() {
                                                 color: 'black',
                                             }
                                         }}
+                                        onChange={onParamsSet}
                                     />
                                 </div>
                                 <Form.Text
@@ -204,7 +397,7 @@ function OperationsScreen() {
                                 </Form.Text>
                             </Form.Group>
                         </Col>
-                     </Form.Row>                     
+                    </Form.Row>                     
                     <Form.Row className={"pt-4"}>
                         <Col>
                             <Map
@@ -216,14 +409,19 @@ function OperationsScreen() {
                             />
                         </Col>
                     </Form.Row>
+                    <ErrorMessage
+                        ref={errorOperation}
+                        styles={styles.error}
+                        message="La operación no pudo ser creada"                        
+                    />
                     <Form.Row className={styles.buttonCreate}>
                         <ButtonLoad
                             variant="primary"
                             type="button"
-                            //onClick={this.registerProbe}
-                            //disabled={!this.registerEnabled()}
+                            onClick={createOperationTouch}
+                            disabled={!createOperationEnabled()}
                             className={styles.centered}
-                            loading={false}
+                            loading={creatingOp}
                         >
                             Crear medición
                         </ButtonLoad>

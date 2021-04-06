@@ -16,7 +16,7 @@ class TokenModal extends PureComponent {
 
     hide = () => this.setState({showModal: false});
     
-    display = (probe) => this.setState({showModal: true, token: probe["identifier"]});
+    display = (probe) => this.setState({showModal: true, token: probe["token"]});
 
     render() {
         return (

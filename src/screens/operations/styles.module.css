@@ -65,3 +65,19 @@
     display: flex;
     justify-content: center;
 }
+
+.error {
+    color: red;
+    text-align: center;
+}
+
+.noOperations {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.operationInfo {
+    display: flex;
+    align-items: center;
+}

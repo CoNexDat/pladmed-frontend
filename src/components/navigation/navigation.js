@@ -54,14 +54,10 @@ function NavigationElement(props) {
                         >
                             Mis datos
                         </NavDropdown.Item>
-                        <NavDropdown.Item
-                            as={NavLink}
-                            to="/my_probes"
-                        >
-                            Mis sondas
-                        </NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item>
+                        <NavDropdown.Item
+                            onClick={props.logout}
+                        >
                             Cerrar sesión
                         </NavDropdown.Item>
                     </NavDropdown>

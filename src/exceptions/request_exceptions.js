@@ -21,3 +21,15 @@ export function MyProbesError(message) {
 export function CreateProbeError(message) {
     this.message = message;
 }
+
+export function MyOperationsError(message) {
+    this.message = message;
+}
+
+export function CreateOperationsError(message) {
+    this.message = message;
+}
+
+export function FindOperationError(message) {
+    this.message = message;
+}

@@ -38,12 +38,12 @@ const NoAuthRoute = ({ component: Component, ...args }) => {
 }
 
 function App() {
-    const { logged } = useContext(Context);
+    const { logged, logout } = useContext(Context);
 
     return (
         <React.Fragment>
             <Router>
-                <Navigation logged={logged()}/>
+                <Navigation logged={logged()} logout={logout}/>
                     <Switch>
                         <NoAuthRoute exact path="/login" component={LoginScreen} />
                         <NoAuthRoute exact path="/register" component={RegisterScreen} />

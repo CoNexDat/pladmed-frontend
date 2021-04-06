@@ -31,10 +31,6 @@ function AccountScreen() {
 
     const handleShowModal = () => registerModal.current.display();
 
-    /*function timeout(delay) {
-        return new Promise( res => setTimeout(res, delay) );
-    }*/
-
     const retrieveProbes = async () => {
         const probes = await getMyProbes();
 
@@ -46,7 +42,6 @@ function AccountScreen() {
             try {
                 const userData = await getUserData();
                 const probes = await getMyProbes();
-                //await timeout(2000);
                 
                 setEmail(userData["email"])
                 setCredits(userData["credits"])
@@ -63,7 +58,6 @@ function AccountScreen() {
 
     const register = async (latitude, longitude) => {
         await registerProbe(latitude, longitude);
-        //await timeout(3000);
         retrieveProbes();
     }
 

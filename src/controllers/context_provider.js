@@ -8,13 +8,21 @@ import {
     UserDataError,
     AllProbesError,
     MyProbesError,
-    CreateProbeError
+    CreateProbeError,
+    MyOperationsError,
+    CreateOperationsError,
+    FindOperationError
 } from '../exceptions/request_exceptions'
 import {
     requestAllProbes,
     requestMyProbes,
     requestRegisterProbe
 } from '../requesters/probes_requester';
+import {
+    requestCreateOperation,
+    requestMyOperations,
+    requestFindOperation
+} from '../requesters/operations_requester'
 
 export const Context = createContext({});
 
@@ -32,19 +40,15 @@ export const ContextProvider = ({ children }) => {
     }
 
     const login = async (email, password) => {
-        try {
-            const [status, res] = await requestLogin(email, password);
+        const [status, res] = await requestLogin(email, password);
 
-            const success = status === 200;
+        const success = status === 200;
 
-            if (!success) {
-                throw new LoginError("Credenciales inválidas")
-            }
-
-            saveToken(res["access_token"])
-        } catch (e) {
-            throw new LoginError("Error al conectarse con el servidor")
+        if (!success) {
+            throw new LoginError("Credenciales inválidas")
         }
+
+        saveToken(res["access_token"])
     }
 
     function handleAuthRequest(fn) {
@@ -76,18 +80,14 @@ export const ContextProvider = ({ children }) => {
                     return login(email, password);
                 },
                 register: async (email, password) => {
-                    try {
-                        const [status, ] = await requestRegister(email, password);
+                    const [status, ] = await requestRegister(email, password);
 
-                        const success = status === 201;
+                    const success = status === 201;
             
-                        if (!success) {
-                            throw new RegisterError(
-                                "El email ya se encuentra registrado"
-                            )
-                        }
-                    } catch (e) {
-                        throw new RegisterError("Error al conectarse con el servidor")
+                    if (!success) {
+                        throw new RegisterError(
+                            "El email ya se encuentra registrado"
+                        )
                     }
 
                     return login(email, password);
@@ -143,6 +143,54 @@ export const ContextProvider = ({ children }) => {
                     }
 
                     return data;                       
+                },
+                getMyOperations: async () => {
+                    const fn = handleAuthRequest(requestMyOperations);
+
+                    const [status, data] = await fn(token);
+
+                    const success = status === 200;
+                    
+                    if (!success) {
+                        throw new MyOperationsError("Ocurrio un error inesperado")
+                    }
+
+                    return data;   
+                },
+                createOperation: async (operation, format, params, probes) => {
+                    const fn = handleAuthRequest(requestCreateOperation);
+
+                    const [status, data] = await fn(
+                        operation,
+                        format,
+                        params,
+                        probes,
+                        token
+                    );
+
+                    const success = status === 201;
+                    
+                    if (!success) {
+                        throw new CreateOperationsError("Ocurrio un error inesperado")
+                    }
+
+                    return data;                       
+                },
+                findOperation: async (operation) => {
+                    const fn = handleAuthRequest(requestFindOperation);
+
+                    const [status, data] = await fn(
+                        operation,
+                        token
+                    );
+
+                    const success = status === 200;
+                    
+                    if (!success) {
+                        throw new FindOperationError("Ocurrio un error inesperado")
+                    }
+
+                    return data;    
                 }
             }}
         >

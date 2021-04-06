@@ -14,8 +14,8 @@ export async function requestMyProbes(token) {
 export async function requestRegisterProbe(latitude, longitude, token) {
     const data = {
         location: {
-            latitude: latitude,
-            longitude: longitude
+            latitude: parseFloat(latitude),
+            longitude: parseFloat(longitude)
         }
     }
 
