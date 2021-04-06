@@ -54,6 +54,39 @@ function OperationsScreen() {
     const errorOperation = useRef();
     const errorSearching = useRef();
 
+    const downloadResults = (result) => {
+        const element = document.createElement("a");
+        const file = new Blob([JSON.stringify(result, null, 2)], {type: 'text/plain'});
+        element.href = URL.createObjectURL(file);
+        element.download = "results.txt";
+        document.body.appendChild(element); // Required for this to work in FireFox
+        element.click(); 
+    }
+
+    const showResults = () => {
+        let resultData = Object.assign({}, results)
+
+        let resultFile = resultData["results"]
+
+        delete resultData["results"]
+
+        return (
+            <div>
+                <pre>
+                    {JSON.stringify(resultData, null, 2)}
+                </pre>
+                <Button
+                    variant="primary"
+                    type="button"
+                    onClick={downloadResults.bind(this, resultFile)}
+                    className={styles.centered}
+                >
+                    Descargar resultados
+                </Button>
+            </div>
+        )
+    }
+
     const retrieveOperations = async () => {
         const myOps = await getMyOperations();
 
@@ -291,11 +324,7 @@ function OperationsScreen() {
                         {
                             Object.keys(results).length > 0 &&
                             <Form.Row>
-                                <div>
-                                    <pre>
-                                        {JSON.stringify(results, null, 2)}
-                                    </pre>
-                                </div>
+                                {showResults()}
                             </Form.Row>
                         }
                     </Container>
@@ -390,9 +419,9 @@ function OperationsScreen() {
                                     <br/>
                                     {"}"}
                                     <br/>
-                                    Para aprender más sobre parámetros, consultar el
-                                    <a href={"https://www.caida.org/tools/measurement/scamper/man/scamper.1.pdf"}>
-                                        &nbsp;manual de Scamper
+                                    Para aprender más sobre parámetros, consultar la
+                                    <a href={"https://github.com/fedefunes96/pladmed-backend/blob/master/docs/operation-parameters.md"}>
+                                        &nbsp;documentación de Pladmed
                                     </a> 
                                 </Form.Text>
                             </Form.Group>

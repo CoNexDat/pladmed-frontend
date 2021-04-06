@@ -61,7 +61,16 @@ function HomeScreen() {
                     xl={6} lg={6} md={12} sm={12} xs={12}
                     className={[styles.textContainer, "h4"]}
                 >
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis at turpis et consectetur. Sed sit amet ultrices elit. Quisque accumsan libero non laoreet placerat. Phasellus blandit tellus eget suscipit mattis. Aliquam at eros urna. Proin placerat massa accumsan suscipit laoreet. Nulla suscipit fermentum ipsum, in vehicula neque luctus in.
+                    <Row>
+                    El proyecto Pladmed busca proveer una aplicación distribuida con
+                    servicios similares a los de RIPE-Atlas, con las siguientes mejoras:
+                        <ul>
+                            <li>No se requiere hardware adicional para correr una sonda</li>
+                            <li>Pladmed ofrece sondas virtuales</li>
+                            <li>Más sencillo de utilizar</li>
+                            <li>Requiere pocos recursos de red, almacenamiento y cómputo</li>
+                        </ul>
+                    </Row>
                 </Col>
                 <Col
                     xl={6} lg={6} md={12} sm={12} xs={12}
