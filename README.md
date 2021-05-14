@@ -28,3 +28,6 @@ npm run build
 ```
 
 This will save index.html, and all the .js and .css files which make up the site, in the `build` subdirectory. From there, they can be copied to the desired location inside www, from where Apache2 can serve it just like any other site.
+
+## License
+All releases of PlaDMed are licensed under the GPL v2.
