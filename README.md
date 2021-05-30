@@ -29,5 +29,9 @@ npm run build
 
 This will save index.html, and all the .js and .css files which make up the site, in the `build` subdirectory. From there, they can be copied to the desired location inside www, from where Apache2 can serve it just like any other site.
 
+## Configuring server to connect to
+
+Go to the `file src/config.connection.js` and edit the URL constant. By default, it will be pointing to the production server. You will probably want to change it to `http://localhost:5000/` (or the port you set for the backend web server) for local development.
+
 ## License
 All releases of PlaDMed are licensed under the GPL v2.
