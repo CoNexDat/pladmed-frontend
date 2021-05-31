@@ -11,17 +11,19 @@ function Register(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [registrationErrorMsg, setRegistrationErrorMessage] = useState("");
 
-    const errorRegister = useRef(null)
+    const registrationError = useRef(null)
 
     const register = async () => {
-        errorRegister.current.hide();
+        registrationError.current.hide();
         setLoading(true);
 
         try {
             await props.register(email, password);
         } catch (e) {
-            errorRegister.current.display();
+            setRegistrationErrorMessage(e.Message());
+            registrationError.current.display();
             setLoading(false);
         }
     }
@@ -56,9 +58,9 @@ function Register(props) {
                 onChange={onPasswordSet}
             />
             <ErrorMessage
-                ref={errorRegister}
+                ref={registrationError}
                 styles={styles.error}
-                message="No podemos registrar su cuenta"
+                message={registrationErrorMsg}
             />
             <Button
                 variant="primary"

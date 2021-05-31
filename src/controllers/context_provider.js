@@ -52,7 +52,7 @@ export const ContextProvider = ({ children }) => {
     }
 
     function handleAuthRequest(fn) {
-        return async function() {
+        return async function () {
             const [status, data] = await fn.apply(this, arguments);
 
             if (status === 401) {
@@ -80,13 +80,13 @@ export const ContextProvider = ({ children }) => {
                     return login(email, password);
                 },
                 register: async (email, password) => {
-                    const [status, ] = await requestRegister(email, password);
+                    const [status, responseData] = await requestRegister(email, password);
 
                     const success = status === 201;
-            
+
                     if (!success) {
                         throw new RegisterError(
-                            "El email ya se encuentra registrado"
+                            responseData
                         )
                     }
 
@@ -98,7 +98,7 @@ export const ContextProvider = ({ children }) => {
                     const [status, data] = await fn(token);
 
                     const success = status === 200;
-                    
+
                     if (!success) {
                         throw new UserDataError("El usuario no existe")
                     }
@@ -111,12 +111,12 @@ export const ContextProvider = ({ children }) => {
                     const [status, data] = await fn(token);
 
                     const success = status === 200;
-                    
+
                     if (!success) {
                         throw new AllProbesError("Ocurrio un error inesperado")
                     }
 
-                    return data;                    
+                    return data;
                 },
                 getMyProbes: async () => {
                     const fn = handleAuthRequest(requestMyProbes);
@@ -124,12 +124,12 @@ export const ContextProvider = ({ children }) => {
                     const [status, data] = await fn(token);
 
                     const success = status === 200;
-                    
+
                     if (!success) {
                         throw new MyProbesError("Ocurrio un error inesperado")
                     }
 
-                    return data;                      
+                    return data;
                 },
                 registerProbe: async (latitude, longitude) => {
                     const fn = handleAuthRequest(requestRegisterProbe);
@@ -137,12 +137,12 @@ export const ContextProvider = ({ children }) => {
                     const [status, data] = await fn(latitude, longitude, token);
 
                     const success = status === 201;
-                    
+
                     if (!success) {
                         throw new CreateProbeError("Ocurrio un error inesperado")
                     }
 
-                    return data;                       
+                    return data;
                 },
                 getMyOperations: async () => {
                     const fn = handleAuthRequest(requestMyOperations);
@@ -150,12 +150,12 @@ export const ContextProvider = ({ children }) => {
                     const [status, data] = await fn(token);
 
                     const success = status === 200;
-                    
+
                     if (!success) {
                         throw new MyOperationsError("Ocurrio un error inesperado")
                     }
 
-                    return data;   
+                    return data;
                 },
                 createOperation: async (operation, format, params, probes) => {
                     const fn = handleAuthRequest(requestCreateOperation);
@@ -169,12 +169,12 @@ export const ContextProvider = ({ children }) => {
                     );
 
                     const success = status === 201;
-                    
+
                     if (!success) {
                         throw new CreateOperationsError("Ocurrio un error inesperado")
                     }
 
-                    return data;                       
+                    return data;
                 },
                 findOperation: async (operation) => {
                     const fn = handleAuthRequest(requestFindOperation);
@@ -185,12 +185,12 @@ export const ContextProvider = ({ children }) => {
                     );
 
                     const success = status === 200;
-                    
+
                     if (!success) {
                         throw new FindOperationError("Ocurrio un error inesperado")
                     }
 
-                    return data;    
+                    return data;
                 }
             }}
         >
